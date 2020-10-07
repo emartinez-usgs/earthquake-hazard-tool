@@ -77,5 +77,4 @@ module.exports = function (grunt) {
     'mocha_phantomjs:coverage',
     'makeReport'
   ]);
-
 };
