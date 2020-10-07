@@ -7,7 +7,7 @@ $CONFIG = parse_ini_file('config.ini');
 $APP_DIR = $CONFIG['APP_DIR'];
 $DATA_DIR = $CONFIG['DATA_DIR'];
 $MOUNT_PATH = $CONFIG['MOUNT_PATH'];
-
+$NO_DB = $CONFIG['NO_DB']; 
 
 // Using NO_DB guard allows pages that do not need database connection to use
 // this same configuration file without adding in database overhead.

@@ -1,0 +1,69 @@
+---
+include:
+  - project: "ghsc/hazdev/pipeline-build-template"
+    ref: "1.1.3"
+    file: "templates/library.yml"
+
+stages:
+  - build
+  - bundle
+  - deploy
+
+## --------------------------------------------------
+## Stage Build
+## --------------------------------------------------
+
+# add hazdev-template:<commit> image to gitlab registry
+Build Image:
+  extends:
+    - .build
+  variables:
+    DOCKER_BUILD_ARGS: |
+      BUILD_IMAGE=${DEVOPS_REGISTRY}usgs/node:latest
+      FROM_IMAGE=${DEVOPS_REGISTRY}usgs/httpd-php:latest
+
+## --------------------------------------------------
+## Stage Bundle Artifact
+## --------------------------------------------------
+Bundle Artifact:
+  extends:
+    - .bundle
+
+## --------------------------------------------------
+## Stage Deploy
+## --------------------------------------------------
+.deploy-app:
+  extends:
+    - .deploy-bundle
+  variables:
+    APP_DEPLOY_DIR: /efs/www/apps/${CI_PROJECT_NAME}
+
+Deploy Development West:
+  extends:
+    - .development-manual
+    - .deploy-app
+    - .tags::deploy:west:development
+
+Deploy Staging East:
+  extends:
+    - .staging
+    - .deploy-app
+    - .tags::deploy:east:staging
+
+Deploy Staging West:
+  extends:
+    - .staging
+    - .deploy-app
+    - .tags::deploy:west:staging
+
+Deploy Production East:
+  extends:
+    - .production
+    - .deploy-app
+    - .tags::deploy:east:production
+
+Deploy Production West:
+  extends:
+    - .production
+    - .deploy-app
+    - .tags::deploy:west:production
