@@ -5,26 +5,22 @@ include:
     file: "templates/library.yml"
 
 stages:
-  - test
   - build
   - bundle
   - deploy
 
 ## --------------------------------------------------
-## Stage Test 
+## Stage Build
 ## --------------------------------------------------
 
 Lint:
+  stage: build
   image: usgs/node:latest
   extends:
     - .tags::development
   script:
     - npm i
     - grunt lint
-
-## --------------------------------------------------
-## Stage Build
-## --------------------------------------------------
 
 # add hazdev-template:<commit> image to gitlab registry
 Build Image:
