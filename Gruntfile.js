@@ -77,4 +77,9 @@ module.exports = function (grunt) {
     'mocha_phantomjs:coverage',
     'makeReport'
   ]);
+
+  grunt.registerTask('lint', [
+    'jshint:dev'
+  ]);
+
 };
