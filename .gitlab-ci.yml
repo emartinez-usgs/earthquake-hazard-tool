@@ -13,15 +13,6 @@ stages:
 ## Stage Build
 ## --------------------------------------------------
 
-Lint:
-  stage: build
-  image: usgs/node:latest
-  extends:
-    - .tags::development
-  script:
-    - npm ci
-    - grunt lint
-
 # add hazdev-template:<commit> image to gitlab registry
 Build Image:
   extends:

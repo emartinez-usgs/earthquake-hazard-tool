@@ -78,8 +78,4 @@ module.exports = function (grunt) {
     'makeReport'
   ]);
 
-  grunt.registerTask('lint', [
-    'jshint:dev'
-  ]);
-
 };
