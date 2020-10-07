@@ -19,7 +19,7 @@ Lint:
   extends:
     - .tags::development
   script:
-    - npm i
+    - npm ci
     - grunt lint
 
 # add hazdev-template:<commit> image to gitlab registry
