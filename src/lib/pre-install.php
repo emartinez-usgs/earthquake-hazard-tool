@@ -47,15 +47,17 @@ $APACHE_CONFIG_FILE = $CONF_DIR . DIRECTORY_SEPARATOR . 'httpd.conf';
 $DEFAULTS = array(
   'APP_DIR' => $APP_DIR,
   'DATA_DIR' => str_replace('/apps/', '/data/', $APP_DIR),
-  'MOUNT_PATH' => '',
+  'MOUNT_PATH' => '/hazards/interactive',
 
   'DB_DSN' => 'pgsql:host=localhost;port=5432;dbname=earthquake',
   'DB_SCHEMA' => 'hazard',
   'DB_USER' => 'web',
   'DB_PASS' => '',
+  // Disable database
+  'NO_DB' => true,
 
-  'CURVE_SERVICES' => 'staticcurve|/hazws/staticcurve/1|HazardResponse',
-  'DEAGG_SERVICES' => ''
+  'CURVE_SERVICES' => 'staticcurve|/hazws/staticcurve/1|HazardResponse,dynamiccurve|/nshmp-haz-ws/hazard|DynamicHazardResponse',
+  'DEAGG_SERVICES' => 'dynamicdeagg|/nshmp-haz-ws/deagg|deagg/DeaggResponse'
 );
 
 $HELP_TEXT = array(
@@ -105,8 +107,23 @@ file_put_contents($APACHE_CONFIG_FILE, '
       $CONFIG['MOUNT_PATH'] . '/curve.ws.php?rewrite=$1 [L,PT]
 
   <Location ' . $CONFIG['MOUNT_PATH'] . '>
-    Order Allow,Deny
-    Allow from all
+    # apache 2.2
+    <IfModule !mod_authz_core.c>
+      Order allow,deny
+      Allow from all
+      <LimitExcept GET OPTIONS>
+        Order allow,deny
+        Deny from all
+      </LimitExcept>
+    </IfModule>
+		
+    # apache 2.4
+    <IfModule mod_authz_core.c>
+      Require all granted
+      <LimitExcept GET OPTIONS>
+        Require all denied
+      </LimitExcept>
+    </IfModule>
   </Location>
 ');
 
